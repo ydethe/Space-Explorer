@@ -1,0 +1,18 @@
+\begintext 
+
+	Here are the SPICE kernels required for my application 
+	program. 
+
+	Note that kernels are loaded in the order listed. Thus we 
+	need to list the highest priority kernel last. 
+
+
+\begindata 
+
+PATH_VALUES  = ( '/Users/ydethe/Documents/XCode-Projects/Kernels' ) 
+
+PATH_SYMBOLS = ( 'Kernels' )
+
+KERNELS_TO_LOAD = ( '$Kernels/lsk/naif0009.tls',
+					'$Kernels/pck/pck00008.tpc',
+					'$Kernels/spk/planets/a_old_versions/de118.bsp' )

@@ -19,7 +19,9 @@
 #ifndef Space_Explorer_vessel_h
 #define Space_Explorer_vessel_h
 
-#include <vector>
+#include <map>
+
+#include <osgUtil/Optimizer>
 
 #include "misc.h"
 #include "tank.h"
@@ -29,7 +31,7 @@ class Vessel {
 private:
     osg::ref_ptr<osg::PositionAttitudeTransform> _osg_node;
     std::string _nom;
-    std::vector<EngineGroup*> _engGroup;
+    std::map<ThrusterType, EngineGroup*> _engGroup;
     Tank _tank;
     
     // Physics
@@ -39,20 +41,25 @@ private:
     double _mass;
     
 public:
-    Vessel(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std::string& model_filename);
+    Vessel(osg::ref_ptr<osg::Group>& root, const std::string& name, const std::string& model_filename);
     ~Vessel();
     
     void setTank(const Tank& tank);
     Tank& obtTank();
     
-    void addEngine(ThrusterType type, ThrusterAxis axis, ThrusterSign sign, const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit);
+    void addEngine(ThrusterType type, const vec3& position, const vec3& vitesse_ejection, double debit);
     
     std::string obtNom() const;
+    
+    void setLevel(ThrusterType type, float level);
+    float getLevel(ThrusterType type);
     
     void addForce(const vec3&); // Force exprimee dans le repere inertiel
     void addTorque(const vec3&); // Moments exprimes dans le repere lie a la fusee
     void resetEfforts();
     void update(double dt);
+    
+    void decrMass(double dm);
     
     vec3 obtPosition() const;
     void defPosition(const vec3&);

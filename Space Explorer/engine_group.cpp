@@ -17,34 +17,98 @@
 
 #include "engine_group.h"
 
-EngineGroup::EngineGroup(Vessel* vessel, ThrusterType type, ThrusterAxis axis, ThrusterSign sign) : _vessel(vessel), _type(type), _axis(axis), _sgn(sign) {
+ThrusterType from_string(const char* typeName) {
+    if (std::string(typeName) == "RCS_LIN_X_POS")
+        return RCS_LIN_X_POS;
+            
+    if (std::string(typeName) == "RCS_LIN_X_NEG")
+        return RCS_LIN_X_NEG;
+        
+    if (std::string(typeName) == "RCS_LIN_Y_POS")
+        return RCS_LIN_Y_POS;
+        
+    if (std::string(typeName) == "RCS_LIN_Y_NEG")
+        return RCS_LIN_Y_POS;
+        
+    if (std::string(typeName) == "RCS_LIN_Z_POS")
+        return RCS_LIN_Z_POS;
+        
+    if (std::string(typeName) == "RCS_LIN_Z_NEG")
+        return RCS_LIN_Z_POS;
+        
+    if (std::string(typeName) == "RCS_ROT_X_POS")
+        return RCS_LIN_X_POS;
+        
+    if (std::string(typeName) == "RCS_ROT_X_NEG")
+        return RCS_LIN_X_NEG;
+        
+    if (std::string(typeName) == "RCS_ROT_Y_POS")
+        return RCS_LIN_Y_POS;
+        
+    if (std::string(typeName) == "RCS_ROT_Y_NEG")
+        return RCS_LIN_Y_POS;
+        
+    if (std::string(typeName) == "RCS_ROT_Z_POS")
+        return RCS_LIN_Z_POS;
+        
+    if (std::string(typeName) == "RCS_ROT_Z_NEG")
+        return RCS_LIN_Z_POS;
+        
+    if (std::string(typeName) == "MAIN")
+        return MAIN;
+        
+    if (std::string(typeName) == "HOVER")
+        return HOVER;
+}
+
+EngineGroup::EngineGroup(Vessel* vessel, ThrusterType type) : _vessel(vessel), _type(type) {
     
 }
 
 EngineGroup::~EngineGroup() {
-
-}
-
-void EngineGroup::createEngine(const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit) {
-    Engine* eng = new Engine(_vessel->obtTank(), _vessel, position, vitesse_ejection, debit);
-    _engines.push_back(eng);
-    std::cout << "Moteur cree" << std::endl;
-}
-
-Eigen::Vector3d EngineGroup::run(double dt) {
     std::vector<Engine*>::iterator it;
-    Eigen::Vector3d com;
-    Eigen::Vector3d force;
-    Eigen::Vector3d torque;
     
-    Eigen::Vector3d tmp_force;
-    Eigen::Vector3d tmp_torque;
+    for (it = _engines.begin(); it != _engines.end(); it++)
+        delete (*it);
+}
+
+void EngineGroup::createEngine(const vec3& position, const vec3& vitesse_ejection, double debit) {
+    Engine* eng = new Engine(_vessel, position, vitesse_ejection, debit);
+    _engines.push_back(eng);
+    osg::notify( osg::ALWAYS ) << "Moteur cree" << std::endl;
+}
+
+void EngineGroup::setLevel(float level) {
+    std::vector<Engine*>::iterator it;
+    
+    for (it = _engines.begin(); it != _engines.end(); it++)
+        (*it)->setLevel(level);
+}
+
+float EngineGroup::getLevel() const {
+    return _engines[0]->getLevel();
+}
+
+Effort EngineGroup::run(double dt) {
+    std::vector<Engine*>::iterator it;
+    vec3 force = vec3(0.,0.,0.);
+    vec3 torque = vec3(0.,0.,0.);
+    Effort effort;
+    
+    vec3 tmp_force;
+    vec3 tmp_torque;
     
     for (it = _engines.begin(); it != _engines.end(); ++it) {
         tmp_force = (*it)->run(dt);
+        tmp_torque = cross((*it)->obtPosition(), tmp_force);
+        
         force += tmp_force;
+        torque += tmp_torque;
     }
     
-    return force;
+    effort.force = force;
+    effort.torque = torque;
+    
+    return effort;
 }
 

@@ -22,9 +22,16 @@
 #include <eigen3/Eigen/Eigen>
 #include <string>
 #include <SpiceUsr.h>
+#include <osg/Matrixd>
+
 #include "util.h"
 
 namespace Spice {
+    /**
+     * \brief Loads an ephemeris file.
+     *
+     * \param KerFile Path to the ephemeris file to load.
+     */
 	void Init(const std::string& KerFile);
 	
 	class Object {
@@ -32,12 +39,25 @@ namespace Spice {
 		std::string mName;
         
 	public:
+        Object();
+		/**
+         * \brief Constructor.
+         *
+         * \param name Name of the CSPICE object (e.g. "Earth").
+         */
         Object(const std::string& name);
 		~Object();
-		Eigen::Vector3d getPosition(double t) const;
-		Eigen::Vector3d getVelocity(double t) const;
-		Eigen::Matrix3d getAttitude(double t) const;
-		Eigen::Matrix3d getAngularVelocity(double t) const;
+        /**
+         * \brief Returns the position of the body at the given date.
+         *
+         * \param t MJD date.
+         * \return Position in J2000 frame.
+         */
+		void getRadii(SpiceDouble* Req, SpiceDouble* Rpo);
+        vec3 getPosition(double t) const;
+		vec3 getVelocity(double t) const;
+        osg::Quat getAttitude(double t) const;
+		vec3 getAngularVelocity(double t) const;
 		
 	};
 	

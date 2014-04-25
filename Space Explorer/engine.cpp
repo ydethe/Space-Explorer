@@ -16,8 +16,9 @@
 
 
 #include "engine.h"
+#include "vessel.h"
 
-Engine::Engine(Tank* tank, Vessel* vessel, const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit) : _debit(debit), _tank(tank) {
+Engine::Engine(Vessel* vessel, const vec3& position, const vec3& vitesse_ejection, double debit) : _vessel(vessel), _debit(debit), _level(0.), _position(position), _ejection(vitesse_ejection) {
     
 }
 
@@ -25,12 +26,37 @@ Engine::~Engine() {
     
 }
 
-Eigen::Vector3d Engine::run(double dt) {
-    Eigen::Vector3d force;
+vec3 Engine::obtPosition() const {
+    return _position;
+}
+
+void Engine::setLevel(float level) {
+    if ( level > 1. || level < 0.)
+        std::cerr << "Level invalide : " << level << std::endl;
+    _level = level;
+}
+
+float Engine::getLevel() const {
+    return _level;
+}
+
+vec3 Engine::run(double dt) {
+    vec3 force;
+    double dm_demande = _level*_debit*dt;
+    double dm_fourni;
     
-    if ( _tank->utilise(_debit*dt) )
-        force = _ejection*_debit;
+    dm_fourni = _vessel->obtTank().utilise(dm_demande);
     
+    osg::notify( osg::ALWAYS ) << "Ve:" << _ejection[0] << "," << _ejection[1] << "," << _ejection[2] << "\td:" << _debit << "\ttau:" << _level << "\tdm_f:" << dm_fourni << "\tdm_d:" << dm_demande << std::endl;
+    
+    if (dm_demande == 0.) {
+        std::cout << "dm_demande == 0." << std::endl;
+        force = vec3(0.,0.,0.);
+    } else
+        force = -_ejection*_debit*_level*dm_fourni/dm_demande;
+    _vessel->decrMass(dm_fourni);
+    
+    osg::notify( osg::ALWAYS ) << "Force : " << force[0] << "," << force[1] << "," << force[2] << std::endl;
     return force;
 }
 

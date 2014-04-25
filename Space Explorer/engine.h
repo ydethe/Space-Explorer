@@ -20,23 +20,31 @@
 
 #include "misc.h"
 #include "tank.h"
-#include "vessel.h"
+
+class Vessel;
 
 class Engine {
 private:
-    Eigen::Vector3d _position; // Position du moteur dans le repere du vaisseau
+    vec3 _position; // Position du moteur dans le repere du vaisseau par rapport à son CdG
     
-    Eigen::Vector3d _ejection; // Vitesse d'ejection du moteur dans le repere du vaisseau
+    vec3 _ejection; // Vitesse d'ejection du moteur dans le repere du vaisseau. Donne l'opposé de la force de poussée
     
-    double _debit;             // Debit de carburant en kg/s
+    double _debit;  // Debit de carburant en kg/s
     
-    Tank* _tank;               // Pointeur vers le reservoir du vaisseau
+    Vessel* _vessel;
+    
+    float _level;
     
 public:
-    Engine(Tank* tank, Vessel* vessel, const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit);
+    Engine(Vessel* vessel, const vec3& position, const vec3& vitesse_ejection, double debit);
     ~Engine();
     
-    Eigen::Vector3d run(double dt);
+    vec3 obtPosition() const;
+    
+    void setLevel(float);
+    float getLevel() const;
+    
+    vec3 run(double dt);
     
 };
 

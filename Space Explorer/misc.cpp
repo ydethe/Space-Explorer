@@ -25,7 +25,10 @@ std::string GetPathFromCFURLRef(CFURLRef urlRef) {
     return path;
 }
 
-std::string GetApplicationBundlePath(CFBundleRef mainBundle) {
+std::string GetApplicationBundlePath() {
+    // Get the main application bundle
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    
     std::string path;
     CFURLRef urlRef = CFBundleCopyBundleURL(mainBundle);
     if(urlRef)
@@ -33,11 +36,14 @@ std::string GetApplicationBundlePath(CFBundleRef mainBundle) {
         path = GetPathFromCFURLRef(urlRef);
         CFRelease(urlRef); // docs say we are responsible for releasing CFURLRef
     }
-    return path;
+    return path + "/";
     
 }
 
-std::string GetApplicationResourcesPath(CFBundleRef mainBundle) {
+std::string GetApplicationResourcesPath() {
+    // Get the main application bundle
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    
     std::string path;
     CFURLRef urlRef = CFBundleCopyResourcesDirectoryURL(mainBundle);
     if(urlRef)
@@ -45,23 +51,17 @@ std::string GetApplicationResourcesPath(CFBundleRef mainBundle) {
         path = GetPathFromCFURLRef(urlRef);
         CFRelease(urlRef);
     }
-    return path;
+    return path + "/";
 }
 
-std::string getResourceFilePaths() {
-    // Get the main application bundle
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
+vec3 cross(const vec3& u, const vec3& v) {
+    vec3 res;
     
-    if (mainBundle != NULL) {
-        // Get the parent directory and the resources directory
-        std::string resourcesPath = GetApplicationResourcesPath(mainBundle);
-        
-        return resourcesPath;
-    }
-    else
-    {
-        osg::notify( osg::DEBUG_INFO ) << "Couldn't find the Application Bundle." << std::endl;
-    }
+    res[0] = u[1]*v[2] - u[2]*v[1];
+    res[1] = u[2]*v[0] - u[0]*v[2];
+    res[2] = u[0]*v[1] - u[1]*v[0];
+    
+    return res;
 }
 
 vec3 multMV(const osg::Matrix3& m, const vec3& v) {
@@ -84,20 +84,15 @@ osg::Matrix3 transpose(const osg::Matrix3& m) {
     return res;
 }
 
-//btDynamicsWorld* initDynamics()
-//{
-//    btDefaultCollisionConfiguration * collisionConfiguration = new btDefaultCollisionConfiguration();
-//    btCollisionDispatcher * dispatcher = new btCollisionDispatcher( collisionConfiguration );
-//    btConstraintSolver * solver = new btSequentialImpulseConstraintSolver;
-//    
-//    btVector3 worldAabbMin( -10000.0f, -10000.0f, -10000.0f );
-//    btVector3 worldAabbMax( 10000.0f, 10000.0f, 10000.0f );
-//    btBroadphaseInterface * inter = new btAxisSweep3( worldAabbMin, worldAabbMax, 1000 );
-//    
-//    btDynamicsWorld * dynamicsWorld = new btDiscreteDynamicsWorld( dispatcher, inter, solver, collisionConfiguration );
-//    
-//    dynamicsWorld->setGravity( btVector3( 0.0f, 0.0f, -9.81f ) );
-//    
-//    return( dynamicsWorld );
-//}
+void strip(std::string& str) {
+
+    str.erase(str.begin());
+    str.erase(str.end() - 1);
+    
+}
+
+bool isURL(const std::string& str) {
+    return str.substr(0,7) == "http://";
+}
+
 

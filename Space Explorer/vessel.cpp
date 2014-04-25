@@ -18,18 +18,25 @@
 #include "vessel.h"
 
 /*
- The body frame uses the X axis for forward and aft, with + to the front. The Y axis is side to side with + to the right. The Z axis is up and down, with + being up. The origin of this frame is the Center of Gravity (CG), about which the aircraft forces and moments are summed and the resulting accelerations are integrated to get velocities
+ The body frame uses the X axis for forward and aft, with + to the front. The Y axis is side to side with + to the right. The Z axis is up and down, with + being down. The origin of this frame is the Center of Gravity (CG), about which the aircraft forces and moments are summed and the resulting accelerations are integrated to get velocities
  */
 
-Vessel::Vessel(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std::string& model_filename) : _nom(nom) {
+Vessel::Vessel(osg::ref_ptr<osg::Group>& root, const std::string& name, const std::string& model_filename) : _nom(name) {
+    
     // Graphics
     _osg_node = new osg::PositionAttitudeTransform();
     
     osg::ref_ptr<osg::Node> node = osgDB::readNodeFile( model_filename );
 	if( !node.valid() ) {
-		osg::notify( osg::FATAL ) << "Can't find \"" << model_filename << std::endl;
+		osg::notify( osg::FATAL ) << "Can't find " << model_filename << std::endl;
 		exit( 0 );
 	}
+    else
+        osg::notify( osg::ALWAYS ) << _nom << " imported" << std::endl;
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(node.get());
+    osg::notify( osg::ALWAYS ) << _nom << " optimized" << std::endl;
+    
     _osg_node->addChild( node.get() );
     root->addChild( _osg_node.get() );
     
@@ -37,11 +44,11 @@ Vessel::Vessel(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std
     _Ixx = 1292310.08;
     _Iyy = 10121289.4;
     _Izz = 10504308.;
-    _Ixz = 190230.749;
+    _Ixz = 190230.749*0.;
     _Ixy = 0.;
     _Iyz = 0.;
     
-    _mass = 104915.915;
+    _mass = 109000.;
     
     this->defPosition(vec3());
     this->defVitesse(vec3());
@@ -50,15 +57,13 @@ Vessel::Vessel(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std
     _force = vec3();
     _torque = vec3();
     
-    osg::notify( osg::ALWAYS ) << _nom << " importé" << std::endl;
-    
 }
 
 Vessel::~Vessel() {
-    std::vector<EngineGroup*>::iterator itGrp;
+    std::map<ThrusterType, EngineGroup*>::iterator itGrp;
     
     for (itGrp = _engGroup.begin(); itGrp != _engGroup.end(); itGrp++)
-        delete (*itGrp);
+        delete itGrp->second;
     
 }
 
@@ -70,10 +75,29 @@ Tank& Vessel::obtTank() {
     return _tank;
 }
 
-void Vessel::addEngine(ThrusterType type, ThrusterAxis axis, ThrusterSign sign, const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit) {
-    EngineGroup* grp = new EngineGroup(this, type, axis, sign);
-    grp->createEngine(position, vitesse_ejection, debit);
-    _engGroup.push_back(grp);
+void Vessel::addEngine(ThrusterType type, const vec3& position, const vec3& vitesse_ejection, double debit) {
+    std::map<ThrusterType, EngineGroup*>::iterator it = _engGroup.find(type);
+    
+    // Si le groupe identifié par type existe déjà, on ajoute le moteur dans celui-ci
+    if(it != _engGroup.end()) {
+        osg::notify( osg::ALWAYS ) << "Moteur ajouté à un groupe déjà existant" << std::endl;
+        it->second->createEngine(position, vitesse_ejection, debit);
+    // Sinon, on crée un groupe avec cet identifiant
+    } else {
+        osg::notify( osg::ALWAYS ) << "Creation d'un groupe de moteurs" << std::endl;
+        EngineGroup* grp = new EngineGroup(this, type);
+        grp->createEngine(position, vitesse_ejection, debit);
+        _engGroup[type] = grp;
+    }
+}
+
+
+void Vessel::setLevel(ThrusterType type, float level) {
+    _engGroup[type]->setLevel(level);
+}
+
+float Vessel::getLevel(ThrusterType type) {
+    return _engGroup[type]->getLevel();
 }
 
 void Vessel::addForce(const vec3& force) { // Force exprimee dans le repere inertiel
@@ -90,6 +114,20 @@ void Vessel::resetEfforts() {
 }
 
 void Vessel::update(double dt) {
+    osg::notify( osg::ALWAYS ) << "Pos : " << this->obtPosition()[0] << "," << this->obtPosition()[1] << "," << this->obtPosition()[2] << std::endl;
+    
+    std::map<ThrusterType,EngineGroup*>::iterator it;
+    Effort effort;
+    
+    for (it = _engGroup.begin(); it != _engGroup.end(); it++) {
+        effort = it->second->run(dt);
+        this->addForce(effort.force);
+        this->addTorque(effort.torque);
+        osg::notify( osg::ALWAYS ) << "Force : " << _force[0] << "," << _force[1] << "," << _force[2] << std::endl;
+    }
+    
+    std::cout << "M:" << _mass << std::endl;
+    
     // Translation
     vec3 new_pos, new_vel;
     
@@ -145,6 +183,10 @@ void Vessel::update(double dt) {
 
 std::string Vessel::obtNom() const {
     return _nom;
+}
+
+void Vessel::decrMass(double dm) {
+    _mass -= dm;
 }
 
 vec3 Vessel::obtPosition() const {

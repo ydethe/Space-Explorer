@@ -17,42 +17,76 @@
 
 #include "misc.h"
 #include "world.h"
+#include "vessel.h"
 
-#define PI 3.14159265358
+// 221T de pousse dans le vide à 104% du nominal Reglable de 67% à 104%
+// 1114kg/s O2 et 210kg/s H2 à 104%
+// ISP 453s
+// V ejection 4440m/s ds vide et 3560m/s au niveau de la mer
+// Rapport de détente tuyère : 69
+// Longueur tuyère : 4.24m
+// Diamètre sortie : 2.38m
+// 
+
+
+#include "world.h"
+#include <osgDB/Archive>
+#include <osgDB/ReaderWriter>
+
+int main0(int argc, char *argv[]) {
+    std::string archivePath;
+    archivePath = GetApplicationResourcesPath() + std::string("XWing.zip");
+    
+    osg::ref_ptr<osgDB::Archive> archive = osgDB::openArchive(archivePath, osgDB::ReaderWriter::READ);
+    osgDB::ReaderWriter::ReaderWriter::ReadResult res = archive->readNode("model.dae");
+
+    osg::ref_ptr<osg::Node> node = res.getNode();
+    
+    if ( node.valid() )
+        std::cout << "OK" << std::endl;
+    else
+        std::cout << "NOK" << std::endl;
+    
+    return 0;
+}
 
 int main(int argc, char *argv[]) {
-    World wd;
+    World wd = World();
     
-    Vessel* shuttle = wd.createVessel("Shuttle", "SpaceShuttleOrbiter.3ds");
-    shuttle->defPosition(vec3());
-    shuttle->defVitesse(vec3());
-    shuttle->defAttitude(osg::Quat());
-    shuttle->defOmega(vec3());
+    wd.importConfig("Earth");
+    wd.importConfig("XWing");
+  
+    Vessel* shuttle = wd._vessels[0];
+    shuttle->defPosition(vec3(0.,0.,0.));
+    shuttle->defVitesse(vec3(0.,0.,0.));
+    shuttle->defAttitude(osg::Quat(0.,0.,0., 1.));
+    shuttle->defOmega(vec3(1.,0.,0.));
     
-    //Planet* earth = wd.createPlanet("Terre", "Earth");
+    Tank tk = Tank(1131.37, 549.407, 549.407);
+    shuttle->setTank(tk);
+    shuttle->addEngine(RCS_LIN_X_NEG, vec3(0.,0.,0.), vec3(-4440., 0., 0.), 1114.);
     
     wd.setUpViewer();
     
     double prevSimTime = 0.0f;
     
-    std::cout << "Entering loop" << std::endl;
-    
     while( !wd.getViewer().done() ) {
         const double currSimTime = wd.getViewer().getFrameStamp()->getSimulationTime();
-        double elapsed( currSimTime - prevSimTime );
-//        if( wd.getViewer().getFrameStamp()->getFrameNumber() < 3 )
-//            elapsed = 1./60.;
+        double dt(currSimTime - prevSimTime);
         
-        wd.update(elapsed);
+//        if ( currSimTime < 1. )
+//            shuttle->setLevel(RCS_LIN_X_NEG, 1.);
+//        else
+//            shuttle->setLevel(RCS_LIN_X_NEG, 0.);
         
-        shuttle->addForce(vec3(0.,0.,9.81*104915.915));
+        osg::notify( osg::ALWAYS ) << "------------------------\nt:" << currSimTime << "\tdt:" << dt << std::endl;
+        wd.update(dt);
         
         prevSimTime = currSimTime;
-        wd.getViewer().frame();
     }
-    
-//    
     
     return 0;
 }
+
+
 

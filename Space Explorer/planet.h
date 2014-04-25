@@ -22,8 +22,11 @@
 #include <osg/Shape>
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
-//#include <osg/Texture2D>
-//
+#include <osgUtil/Optimizer>
+#include <osg/CoordinateSystemNode>
+#include <osgDB/Archive>
+#include <osgDB/ReaderWriter>
+
 #include "misc.h"
 #include "spice.h"
 
@@ -31,10 +34,10 @@ class Planet {
 private:
     std::string _nom;
     Spice::Object _spice;
-    osg::ref_ptr<osg::MatrixTransform> _osg_node;
+    osg::ref_ptr<osg::Geode> _osg_node;
     
 public:
-    Planet(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std::string& nom_spice);
+    Planet(osg::ref_ptr<osg::Group>& root, const std::string& disp_name, const std::string& spice_name, const std::string& ground_tex_name, const std::string& cloud_tex_name);
     ~Planet();
     
     void update(double dt);

@@ -15,7 +15,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
-
 #ifndef Space_Explorer_world_h
 #define Space_Explorer_world_h
 
@@ -24,8 +23,11 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
+#include <fstream>
+
 #include "planet.h"
 #include "vessel.h"
+#include "clock.h"
 
 class World {
 public:
@@ -33,18 +35,22 @@ public:
     std::vector<Vessel*> _vessels;
     osg::ref_ptr<osg::Group> _root_node;
     osgViewer::Viewer _viewer;
+    osg::Camera* _camera;
+    Clock _clk;
     
 public:
     World();
     ~World();
     
-    Planet* createPlanet(const std::string& nom, const std::string& nom_spice);
-    Vessel* createVessel(const std::string& nom, const std::string& model_filename);
+    void importConfig(const std::string& folder_name);
+    
+    Planet* createPlanet(const std::string& spice_name, const std::string& ground_tex_name, const std::string& cloud_tex_name, const std::string& disp_name);
+    Vessel* createVessel(const std::string& name, const std::string& model_filename);
     
     void setUpViewer();
     osgViewer::Viewer& getViewer();
     
-    bool update(double dt);
+    void update(double dt);
     
 };
 

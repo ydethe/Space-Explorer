@@ -22,8 +22,6 @@
 
 class Tank {
 private:
-    std::string _nom;
-    
     double _rho;      // Masse volumique du carburant
     
     double _volume;   // Volume courant
@@ -32,10 +30,10 @@ private:
     
 public:
     Tank();
-    Tank(const std::string& nom, double rho, double capacite, double volume);
+    Tank(double rho, double capacite, double volume);
     ~Tank();
     
-    bool utilise(double volume_consomme);
+    double utilise(double volume_consomme);
     
 };
 

@@ -25,32 +25,24 @@
 #include <osg/MatrixTransform>
 #include <osgDB/FileUtils>
 
-//#include <osgbDynamics/RigidBody.h>
-//#include <osgbDynamics/MotionState.h>
-//#include <bullet/btBulletCollisionCommon.h>
-//#include <bullet/BulletCollision/btBulletCollisionCommon.h>
-//#include <osgbCollision/CollisionShapes.h>
-//#include <osgbCollision/Utils.h>
-//
-//#include <bullet/btBulletDynamicsCommon.h>
-//#include <osgbDynamics/CreationRecord.h>
+#include "util.h"
 
 #include <eigen3/Eigen/Eigen>
 
-typedef osg::Vec3d vec3;
+#define OSGNOTIFYLEVEL DEBUG
 
 std::string GetPathFromCFURLRef(CFURLRef urlRef);
 
-std::string GetApplicationBundlePath(CFBundleRef mainBundle);
+std::string GetApplicationBundlePath();
 
-std::string GetApplicationResourcesPath(CFBundleRef mainBundle);
+std::string GetApplicationResourcesPath();
 
-std::string getResourceFilePaths();
-
+vec3 cross(const vec3& u, const vec3& v);
 vec3 multMV(const osg::Matrix3&, const vec3&);
 osg::Matrix3 transpose(const osg::Matrix3&);
 
-//btDynamicsWorld* initDynamics();
+void strip(std::string&);
+bool isURL(const std::string&);
 
 
 #endif

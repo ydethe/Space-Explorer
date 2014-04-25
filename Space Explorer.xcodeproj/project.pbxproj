@@ -7,16 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		992EEFF2141FF44200AA25C3 /* KernelsToLoad.ker in Resources */ = {isa = PBXBuildFile; fileRef = 992EEFF1141FF44200AA25C3 /* KernelsToLoad.ker */; };
+		993022FF14423AA80093088F /* planet.frag in Resources */ = {isa = PBXBuildFile; fileRef = 993418EB14421B8400AD3D2B /* planet.frag */; };
+		9930230014423AA80093088F /* planet.vert in Resources */ = {isa = PBXBuildFile; fileRef = 993418EC14421B8400AD3D2B /* planet.vert */; };
 		9946F0AC141EAF6A00D707A1 /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9946F0AB141EAF6A00D707A1 /* world.cpp */; };
-		994D2ECE1423B53E00463427 /* SpaceShuttleOrbiter.3ds in Resources */ = {isa = PBXBuildFile; fileRef = 994D2ECC1423B53E00463427 /* SpaceShuttleOrbiter.3ds */; };
-		994D2ECF1423B53E00463427 /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 994D2ECD1423B53E00463427 /* textures */; };
-		997E4DFE13FFB4160037FE74 /* earth.png in Resources */ = {isa = PBXBuildFile; fileRef = 997E4DFD13FFB4160037FE74 /* earth.png */; };
 		998D7CD4141D584F008C99DC /* icone.png in Resources */ = {isa = PBXBuildFile; fileRef = 998D7CD3141D584F008C99DC /* icone.png */; };
 		999262B91400003B00E9576C /* engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 999262B81400003B00E9576C /* engine.cpp */; };
 		999262BD1400017B00E9576C /* tank.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 999262BC1400017B00E9576C /* tank.cpp */; };
 		999262C0140007EE00E9576C /* engine_group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 999262BF140007EE00E9576C /* engine_group.cpp */; };
-		99CC827214059F4B00FBC6BD /* essai.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99CC827114059F4B00FBC6BD /* essai.cpp */; };
+		999D135614291713004AD23A /* orbitalElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 999D135514291713004AD23A /* orbitalElements.cpp */; };
+		999D1359142926A9004AD23A /* clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 999D1358142926A9004AD23A /* clock.cpp */; };
 		99F48EA113FED2B100FB2261 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99F48EA013FED2B100FB2261 /* Cocoa.framework */; };
 		99F48EAB13FED2B100FB2261 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 99F48EA913FED2B100FB2261 /* InfoPlist.strings */; };
 		99F48EAD13FED2B100FB2261 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 99F48EAC13FED2B100FB2261 /* main.cpp */; };
@@ -29,12 +28,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		992EEFF1141FF44200AA25C3 /* KernelsToLoad.ker */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KernelsToLoad.ker; sourceTree = "<group>"; };
+		993418EB14421B8400AD3D2B /* planet.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = planet.frag; path = "Space Explorer/planet.frag"; sourceTree = "<group>"; };
+		993418EC14421B8400AD3D2B /* planet.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = planet.vert; path = "Space Explorer/planet.vert"; sourceTree = "<group>"; };
 		9946F0A9141EAF5F00D707A1 /* world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = world.h; sourceTree = "<group>"; };
 		9946F0AB141EAF6A00D707A1 /* world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = world.cpp; sourceTree = "<group>"; };
-		994D2ECC1423B53E00463427 /* SpaceShuttleOrbiter.3ds */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpaceShuttleOrbiter.3ds; sourceTree = "<group>"; };
-		994D2ECD1423B53E00463427 /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = textures; sourceTree = "<group>"; };
-		997E4DFD13FFB4160037FE74 /* earth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = earth.png; sourceTree = "<group>"; };
 		998D7CD3141D584F008C99DC /* icone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icone.png; sourceTree = "<group>"; };
 		999262B61400003200E9576C /* engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine.h; sourceTree = "<group>"; };
 		999262B81400003B00E9576C /* engine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = engine.cpp; sourceTree = "<group>"; };
@@ -42,7 +39,10 @@
 		999262BC1400017B00E9576C /* tank.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tank.cpp; sourceTree = "<group>"; };
 		999262BE140007DE00E9576C /* engine_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine_group.h; sourceTree = "<group>"; };
 		999262BF140007EE00E9576C /* engine_group.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = engine_group.cpp; sourceTree = "<group>"; };
-		99CC827114059F4B00FBC6BD /* essai.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = essai.cpp; sourceTree = "<group>"; };
+		999D1353142916F5004AD23A /* orbitalElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = orbitalElements.h; sourceTree = "<group>"; };
+		999D135514291713004AD23A /* orbitalElements.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = orbitalElements.cpp; sourceTree = "<group>"; };
+		999D13571429269D004AD23A /* clock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clock.h; sourceTree = "<group>"; };
+		999D1358142926A9004AD23A /* clock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clock.cpp; sourceTree = "<group>"; };
 		99F48E9C13FED2B100FB2261 /* Space Explorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space Explorer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		99F48EA013FED2B100FB2261 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		99F48EA313FED2B100FB2261 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -77,14 +77,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		997E4E0013FFB41A0037FE74 /* Planet */ = {
-			isa = PBXGroup;
-			children = (
-				997E4DFD13FFB4160037FE74 /* earth.png */,
-			);
-			name = Planet;
-			sourceTree = "<group>";
-		};
 		99F48E9113FED2B100FB2261 = {
 			isa = PBXGroup;
 			children = (
@@ -128,7 +120,6 @@
 				99F48F4813FF041100FB2261 /* SPICE */,
 				99F48F3613FEEE7B00FB2261 /* include */,
 				99F48F3513FEEE7700FB2261 /* src */,
-				99CC827114059F4B00FBC6BD /* essai.cpp */,
 				99F48EAC13FED2B100FB2261 /* main.cpp */,
 				99F48EA713FED2B100FB2261 /* Supporting Files */,
 			);
@@ -150,9 +141,8 @@
 		99F48EBD13FED4D000FB2261 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				997E4E0013FFB41A0037FE74 /* Planet */,
-				99F48F4C13FF044700FB2261 /* Spice */,
-				99F48F4B13FF043A00FB2261 /* Vessels */,
+				993418EB14421B8400AD3D2B /* planet.frag */,
+				993418EC14421B8400AD3D2B /* planet.vert */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -161,11 +151,13 @@
 			isa = PBXGroup;
 			children = (
 				99F48F3D13FEF04B00FB2261 /* misc.cpp */,
-				99F48F4E13FF048D00FB2261 /* planet.cpp */,
 				999262BC1400017B00E9576C /* tank.cpp */,
 				999262B81400003B00E9576C /* engine.cpp */,
 				999262BF140007EE00E9576C /* engine_group.cpp */,
+				999D135514291713004AD23A /* orbitalElements.cpp */,
 				99F48F3713FEEEA900FB2261 /* vessel.cpp */,
+				99F48F4E13FF048D00FB2261 /* planet.cpp */,
+				999D1358142926A9004AD23A /* clock.cpp */,
 				9946F0AB141EAF6A00D707A1 /* world.cpp */,
 			);
 			name = src;
@@ -175,11 +167,13 @@
 			isa = PBXGroup;
 			children = (
 				99F48F3C13FEF01700FB2261 /* misc.h */,
-				99F48F4D13FF048600FB2261 /* planet.h */,
 				999262BB1400017200E9576C /* tank.h */,
 				999262B61400003200E9576C /* engine.h */,
 				999262BE140007DE00E9576C /* engine_group.h */,
+				999D1353142916F5004AD23A /* orbitalElements.h */,
 				99F48F3913FEEEB800FB2261 /* vessel.h */,
+				99F48F4D13FF048600FB2261 /* planet.h */,
+				999D13571429269D004AD23A /* clock.h */,
 				9946F0A9141EAF5F00D707A1 /* world.h */,
 			);
 			name = include;
@@ -194,23 +188,6 @@
 				99F48F4513FF040700FB2261 /* spice.cpp */,
 			);
 			name = SPICE;
-			sourceTree = "<group>";
-		};
-		99F48F4B13FF043A00FB2261 /* Vessels */ = {
-			isa = PBXGroup;
-			children = (
-				994D2ECC1423B53E00463427 /* SpaceShuttleOrbiter.3ds */,
-				994D2ECD1423B53E00463427 /* textures */,
-			);
-			name = Vessels;
-			sourceTree = "<group>";
-		};
-		99F48F4C13FF044700FB2261 /* Spice */ = {
-			isa = PBXGroup;
-			children = (
-				992EEFF1141FF44200AA25C3 /* KernelsToLoad.ker */,
-			);
-			name = Spice;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,13 +241,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				993022FF14423AA80093088F /* planet.frag in Resources */,
+				9930230014423AA80093088F /* planet.vert in Resources */,
 				99F48EAB13FED2B100FB2261 /* InfoPlist.strings in Resources */,
 				99F48EB113FED2B100FB2261 /* Credits.rtf in Resources */,
-				997E4DFE13FFB4160037FE74 /* earth.png in Resources */,
 				998D7CD4141D584F008C99DC /* icone.png in Resources */,
-				992EEFF2141FF44200AA25C3 /* KernelsToLoad.ker in Resources */,
-				994D2ECE1423B53E00463427 /* SpaceShuttleOrbiter.3ds in Resources */,
-				994D2ECF1423B53E00463427 /* textures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,8 +265,9 @@
 				999262B91400003B00E9576C /* engine.cpp in Sources */,
 				999262BD1400017B00E9576C /* tank.cpp in Sources */,
 				999262C0140007EE00E9576C /* engine_group.cpp in Sources */,
-				99CC827214059F4B00FBC6BD /* essai.cpp in Sources */,
 				9946F0AC141EAF6A00D707A1 /* world.cpp in Sources */,
+				999D135614291713004AD23A /* orbitalElements.cpp in Sources */,
+				999D1359142926A9004AD23A /* clock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,9 +346,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Space Explorer/Space Explorer-Prefix.pch";
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
 					/usr/local/include/bullet,
@@ -383,11 +360,15 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-losgEarth",
 					"-lcspice",
+					"-lxerces-c",
 					"-losg",
 					"-losgViewer",
+					"-losgTerrain",
 					"-losgUtil",
 					"-lOpenThreads",
+					"-losgText",
 					"-losgDB",
 					"-losgGA",
 					"-losgwTools",
@@ -399,6 +380,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -407,9 +389,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Space Explorer/Space Explorer-Prefix.pch";
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
 					/usr/local/include/bullet,
@@ -420,11 +403,15 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
+					"-losgEarth",
 					"-lcspice",
+					"-lxerces-c",
 					"-losg",
 					"-losgViewer",
+					"-losgTerrain",
 					"-losgUtil",
 					"-lOpenThreads",
+					"-losgText",
 					"-losgDB",
 					"-losgGA",
 					"-losgwTools",
@@ -436,6 +423,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -17,32 +17,28 @@
 
 #include "tank.h"
 
-Tank::Tank() : _nom("[Uninitialized]"), _rho(1.), _capacite(1.), _volume(0.) {
+Tank::Tank() : _rho(1.), _capacite(1.), _volume(0.) {
     
 }
 
-Tank::Tank(const std::string& nom, double rho, double capacite, double volume) : _nom(nom), _rho(rho), _capacite(capacite), _volume(volume) {
+Tank::Tank(double rho, double capacite, double volume) : _rho(rho), _capacite(capacite), _volume(volume) {
     
 }
 
 Tank::~Tank() {
     
 }
-bool Tank::utilise(double masse_consomme) {
-    double dV;
+
+double Tank::utilise(double masse_consomme) {
     double volume_consomme = masse_consomme/_rho;
-    bool not_empty;
+    double dm;
     
-    if (_volume > volume_consomme) {
-        dV = volume_consomme;
-        _volume -= volume_consomme;
-        not_empty = true;
-    } else {
-        dV = _volume;
-        _volume = 0.;
-        not_empty = false;
-    }
+    if (_volume < volume_consomme)
+        volume_consomme = _volume;
+    dm = volume_consomme*_rho;
+    _volume -= volume_consomme;
     
-    return not_empty;
+    osg::notify( osg::ALWAYS ) << "V:" << _volume << "\tdm:" << masse_consomme << std::endl;
+    return dm;
 }
 

@@ -19,28 +19,33 @@
 #define Space_Explorer_engine_group_h
 
 #include <vector>
+#include <string>
 
 #include "engine.h"
 
-typedef enum {RCS_LIN, RCS_ROT, MAIN, HOVER} ThrusterType;
-typedef enum {X, Y, Z} ThrusterAxis;
-typedef enum {POSITIVE, NEGATIVE} ThrusterSign;
+typedef enum {RCS_LIN_X_POS, RCS_LIN_X_NEG, RCS_LIN_Y_POS, RCS_LIN_Y_NEG, RCS_LIN_Z_POS, RCS_LIN_Z_NEG, RCS_ROT_X_POS, RCS_ROT_X_NEG, RCS_ROT_Y_POS, RCS_ROT_Y_NEG, RCS_ROT_Z_POS, RCS_ROT_Z_NEG, MAIN, HOVER} ThrusterType;
+
+typedef struct {vec3 force; vec3 torque;} Effort;
+
+ThrusterType from_string(const char* typeName);
 
 class EngineGroup {
 private:
     std::vector<Engine*> _engines;
     ThrusterType _type;
-    ThrusterAxis _axis;
-    ThrusterSign _sgn;
     
     Vessel* _vessel;           // Vaisseau auquel le moteur appartient
     
 public:
-    EngineGroup(Vessel* vessel, ThrusterType type, ThrusterAxis axis, ThrusterSign sign);
+    EngineGroup(Vessel* vessel, ThrusterType type);
     ~EngineGroup();
     
-    void createEngine(const Eigen::Vector3d& position, const Eigen::Vector3d& vitesse_ejection, double debit);
-    Eigen::Vector3d run(double dt);
+    void createEngine(const vec3& position, const vec3& vitesse_ejection, double debit);
+    
+    void setLevel(float level);
+    float getLevel() const;
+    
+    Effort run(double dt);
     
 };
 

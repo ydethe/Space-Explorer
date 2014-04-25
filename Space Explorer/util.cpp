@@ -21,8 +21,8 @@ void getPresentTime(char* date) {
 	//boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
 	boost::posix_time::ptime now = boost::posix_time::microsec_clock::universal_time();
 	
-	//std::string Sdate = stringify(now);
-    std::string Sdate("20 August 2011 21:36:48.00");
+	std::string Sdate = stringify(now);
+    //std::string Sdate("20 August 2011 21:36:48.00");
 	size_t length;
 	length = Sdate.copy(date, Sdate.size());
 	date[length] = '\0';

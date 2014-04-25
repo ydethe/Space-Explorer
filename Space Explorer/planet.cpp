@@ -15,36 +15,114 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
+//http://eoimages.gsfc.nasa.gov/ve/2432/cloud_combined_2048.jpg
+//http://static.die.net/earth/mercator/1600.jpg
+//http://www.parstimes.com/MODIS/cloud_combined.jpg
+
 #include "planet.h"
 
-Planet::Planet(osg::ref_ptr<osg::Group>& root, const std::string& nom, const std::string& nom_spice) : _nom(nom), _spice(Spice::Object(nom_spice)) {
+Planet::Planet(osg::ref_ptr<osg::Group>& root, const std::string& disp_name, const std::string& spice_name, const std::string& ground_tex_name, const std::string& cloud_tex_name) {
     
-    _osg_node = new osg::MatrixTransform();
+    _nom = disp_name;
+    _spice = Spice::Object(spice_name);
     
-    osg::Geode* geode = new osg::Geode();
+    // Importation des parametres physiques dans SPICE
+    double Req, Rpo;
+    _spice.getRadii(&Req, &Rpo);
     
-    geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.,0.,0.), 1000.)));
-
+    // OSG part
+    osg::Uniform* lightPositionUniform;
+    osg::Uniform* cloudPositionUniform;
     
-//    //Getting the state set of the geode
-//	osg::ref_ptr<osg::StateSet> nodess( geode->getOrCreateStateSet() );
-//    
-//    //loading texture image object
-//    osg::ref_ptr<osg::Image> image( osgDB::readImageFile("earth.png") );
-//    
-//    //Bind the image to a 2D texture object
-//	osg::ref_ptr<osg::Texture2D> tex( new osg::Texture2D );
-//	tex->setImage( image.get() );
-//    
-//    //Applying texture on the object
-//	//nodess->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
-//	nodess->setTextureAttributeAndModes(0, tex.get(), osg::StateAttribute::ON);
+    _osg_node = new osg::Geode();
     
-    _osg_node->addChild( geode );
+    _osg_node->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(), 1.0f)));
+	
+	osg::StateSet *planetStateSet = _osg_node->getOrCreateStateSet();
+	planetStateSet->ref();
+	
+	osg::Program *programObject = new osg::Program();
+	osg::Shader *vertexObject = new osg::Shader(osg::Shader::VERTEX);
+	osg::Shader *fragmentObject = new osg::Shader(osg::Shader::FRAGMENT);
+	programObject->addShader(fragmentObject);
+	programObject->addShader(vertexObject);
+	
+	vertexObject->loadShaderSourceFromFile(GetApplicationResourcesPath() + "planet.vert");
+	fragmentObject->loadShaderSourceFromFile(GetApplicationResourcesPath() + "planet.frag");
+	
+	planetStateSet->setAttributeAndModes(programObject, osg::StateAttribute::ON);
+	
+	
+	// TEXTURES
+	
+	// EARTH
+    if (isURL(ground_tex_name))
+        std::cout << "Téléchargement de " + ground_tex_name;
+	osg::Image *image = osgDB::readImageFile(ground_tex_name);
+	if (isURL(ground_tex_name))
+        std::cout << "    Terminé" << std::endl;
+    
+    if (!image) {
+		std::cout << "Couldn't load texture " << ground_tex_name << std::endl;
+	}
+	osg::Texture2D *texture = new osg::Texture2D;
+	texture->setDataVariance(osg::Object::DYNAMIC);
+	texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+	texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+	texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+	texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+	texture->setImage(image);
+	
+	planetStateSet->setTextureAttributeAndModes(
+                                                // use texture unit 0
+                                                0, texture, osg::StateAttribute::ON
+                                                );
+	
+	// use texture unit 0
+	planetStateSet->addUniform(new osg::Uniform("planet_map", 0));
+	
+	
+	// CLOUDS
+	if (isURL(cloud_tex_name))
+        std::cout << "Téléchargement de " + cloud_tex_name;
+	osg::Image *image_clouds = osgDB::readImageFile(cloud_tex_name);
+	if (isURL(cloud_tex_name))
+        std::cout << "    Terminé" << std::endl;
+	
+    if (!image_clouds) {
+		std::cout << "Couldn't load texture " << cloud_tex_name << std::endl;
+	}
+	osg::Texture2D *texture_clouds = new osg::Texture2D;
+	texture_clouds->setDataVariance(osg::Object::DYNAMIC);
+	texture_clouds->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+	texture_clouds->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+	texture_clouds->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+	texture_clouds->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+	texture_clouds->setImage(image_clouds);
+	
+	planetStateSet->setTextureAttributeAndModes(
+                                                // use texture unit 1
+                                                1, texture_clouds, osg::StateAttribute::ON
+                                                );
+	
+	// use texture unit 0
+	planetStateSet->addUniform(new osg::Uniform("planet_map_clouds", 1));
+	
+	// END TEXTURES
+	
+	
+	lightPositionUniform = new osg::Uniform("light_position", osg::Vec4());
+	planetStateSet->addUniform(lightPositionUniform);
+	
+	cloudPositionUniform = new osg::Uniform("cloud_position", osg::Vec2());
+	planetStateSet->addUniform(cloudPositionUniform);
+	
+	lightPositionUniform->set(osg::Vec4(-1.0, 0.0, 0.0, 0.0));
+	cloudPositionUniform->set(osg::Vec2(0.0, 0.0));
+    
     root->addChild( _osg_node.get() );
-    root->addChild( geode );
     
-    osg::notify( osg::ALWAYS ) << _nom << " crée" << std::endl;
+    osg::notify( osg::ALWAYS ) << "Planète " << _nom << " crée" << std::endl;
     
 }
 

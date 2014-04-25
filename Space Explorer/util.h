@@ -25,6 +25,10 @@
 #include <SpiceUsr.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <osg/Vec3d>
+
+typedef osg::Vec3d vec3;
+
 class BadConversion : public std::runtime_error {
 public:
 	BadConversion(const std::string& s)
@@ -32,6 +36,12 @@ public:
 	{ }
 };
 
+/**
+ * \brief Converts anything that has a flux operator implemented into a std::string.
+ *
+ * \param x Object to be converted into a string.
+ * \return std::string that represents the object.
+ */
 template <typename T> std::string stringify(T x) {
 	std::ostringstream o;
 	if (!(o << x))
@@ -39,6 +49,11 @@ template <typename T> std::string stringify(T x) {
 	return o.str();
 }
 
-void getPresentTime(char*);
+/**
+ * \brief Gets current time into the char* argument, under the form .
+ *
+ * \param date String that will contain the current date.
+ */
+void getPresentTime(char* date);
 
 #endif

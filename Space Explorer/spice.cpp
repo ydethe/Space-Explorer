@@ -22,15 +22,30 @@ namespace Spice {
 		furnsh_c(KerFile.c_str());
 	}
     
-	Object::Object(const std::string& name) : mName(name) {
+	Object::Object() : mName("[UNDEF]") {
+		
+	}
+    
+    Object::Object(const std::string& name) : mName(name) {
 		
 	}
 	
 	Object::~Object() {
 	}
-		
-	Eigen::Vector3d Object::getPosition(double t) const {
-        Eigen::Vector3d mPosition;
+    
+    void Object::getRadii(double* Req, double* Rpo) {
+        SpiceDouble radii[3];
+        SpiceInt N;
+        
+        std::cout << "Appel" << std::endl;
+        bodvrd_c(mName.c_str(), "RADII", 3, &N, radii);
+        *Req = double(radii[0]*1000.);
+        *Rpo = double(radii[2]*1000.);
+//        std::cout << N << "," << *Req << "," << *Rpo << std::endl;
+    }
+    
+	vec3 Object::getPosition(double t) const {
+        vec3 mPosition;
         
 		SpiceDouble tdb;
 		SpiceDouble state[6];
@@ -44,13 +59,13 @@ namespace Spice {
 		
 		// Calcul pos. & vit.
 		spkezr_c(mName.c_str(), tdb, "J2000", "None", "Sun", state, &lt);
-		mPosition << state[0], state[1], state[2];
+		mPosition = vec3(state[0], state[1], state[2]);
 		
         return mPosition;
 	}
 	
-	Eigen::Vector3d Object::getVelocity(double t) const {
-		Eigen::Vector3d mVelocity;
+	vec3 Object::getVelocity(double t) const {
+		vec3 mVelocity;
         
 		SpiceDouble tdb;
 		SpiceDouble state[6];
@@ -64,13 +79,14 @@ namespace Spice {
 		
 		// Calcul pos. & vit.
 		spkezr_c(mName.c_str(), tdb, "J2000", "None", "Sun", state, &lt);
-		mVelocity << state[3], state[4], state[5];
+		mVelocity =vec3(state[3], state[4], state[5]);
 		
         return mVelocity;
 	}
 	
-	Eigen::Matrix3d Object::getAttitude(double t) const {
-		Eigen::Matrix3d mAttitude;
+    osg::Quat Object::getAttitude(double t) const {
+        osg::Quat mAttitude;
+        osg::Matrixd mat;
         
 		SpiceDouble tdb;
 		SpiceDouble state[6];
@@ -84,13 +100,17 @@ namespace Spice {
 		
 		// Calcul att. & vit. angulaire
 		sxform_c((std::string("IAU_") + mName).c_str(), "J2000", tdb, xform);
-		mAttitude << xform[0][0], xform[0][1], xform[0][2], xform[1][0], xform[1][1], xform[1][2], xform[2][0], xform[2][1], xform[2][2];
+		mat = osg::Matrixd(xform[0][0], xform[0][1], xform[0][2], 0.,
+                      xform[1][0], xform[1][1], xform[1][2], 0.,
+                      xform[2][0], xform[2][1], xform[2][2], 0.,
+                      0.,          0.,          0.,          1.);
 		
+        mAttitude = mat.getRotate();
         return mAttitude;
 	}
 	
-	Eigen::Matrix3d Object::getAngularVelocity(double t) const {
-		Eigen::Matrix3d mAngularVelocity;
+	vec3 Object::getAngularVelocity(double t) const {
+		vec3 mAngularVelocity = vec3(0.,0.,0.);
         
 		SpiceDouble tdb;
 		SpiceDouble state[6];
@@ -104,7 +124,10 @@ namespace Spice {
 		
 		// Calcul att. & vit. angulaire
 		sxform_c((std::string("IAU_") + mName).c_str(), "J2000", tdb, xform);
-		mAngularVelocity << xform[3][0], xform[3][1], xform[3][2], xform[4][0], xform[4][1], xform[4][2], xform[5][0], xform[5][1], xform[5][2];
+		
+        for (int k=0; k<3; k++) {
+            mAngularVelocity = mAngularVelocity + vec3(-xform[4][k]*xform[5][k], xform[3][k]*xform[5][k], -xform[3][k]*xform[4][k]);
+        }
         
         return mAngularVelocity;
 	}
